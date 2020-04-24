@@ -1,0 +1,55 @@
+---
+title: "Pitcher Report - Kevin Wiseman"
+author: '@pmamminofantasy'
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(chron)
+library(stringr)
+library(ggplot2)
+library(mgcv)
+library(REdaS)
+library(gridExtra)
+library(DT)
+```
+
+## Pitch Arsenal Summary
+
+
+```{r echo=FALSE}
+test <- read.csv("Wiseman.csv",stringsAsFactors = FALSE)
+test <- test %>%
+  filter(TOTAL.SPIN != "-")
+
+test$SPIN.DIR. <- chron(times = paste0(test$SPIN.DIR.,":00"))
+test$SPIN.AXIS <- ifelse(test$H..BREAK > 0,180 + (chron::hours(test$SPIN.DIR.)*30) + (chron::minutes(test$SPIN.DIR.)/2),(chron::hours(test$SPIN.DIR.)*30) - 180 + (chron::minutes(test$SPIN.DIR.)/2))
+
+pitcher_stats <- test %>% 
+  select(PITCH.TYPE,VELOCITY, TOTAL.SPIN,TRUE.SPIN,SPIN.AXIS,H..BREAK, V..BREAK) %>%
+  group_by(PITCH.TYPE) %>%
+  summarise(Velo = mean(as.numeric(VELOCITY)), 
+            Total.Spin = mean(as.numeric(TOTAL.SPIN)), 
+            True.Spin = mean(as.numeric(TRUE.SPIN)),
+            Spin.Axis = mean(SPIN.AXIS),
+            HB = mean(as.numeric(H..BREAK)), 
+            VB = mean(as.numeric(V..BREAK)))
+pitcher_stats$PITCH.TYPE <- str_trim(pitcher_stats$PITCH.TYPE)
+pitcher_stats <- pitcher_stats[order(factor(pitcher_stats$PITCH.TYPE, levels = c("FB","CH","CV","SL"))), ]
+pitcher_stats$BU <- pitcher_stats$Total.Spin/pitcher_stats$Velo  
+pitcher_stats$Move_Angle <- rad2deg(atan2(pitcher_stats$VB,pitcher_stats$HB))
+pitcher_stats$SpinEff <- (pitcher_stats$True.Spin/pitcher_stats$Total.Spin)*100
+pitcher_stats <- pitcher_stats %>% mutate_if(is.numeric, ~round(., 1))
+datatable(pitcher_stats,rownames= FALSE, options = list(searching = FALSE,
+  dom = 't'))
+```
+
+## Ideal Pitch Arsenal 
+```{r echo=FALSE}
+
+
+```
+
