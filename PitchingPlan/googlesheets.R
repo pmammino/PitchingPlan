@@ -1,5 +1,4 @@
 #!/usr/bin/env Rscript
-
 library(googlesheets4)
 library(mailR)
 library(lubridate)
@@ -9,8 +8,7 @@ library(htmlTable)
 
 
 
-setwd("C:\\Users\\paulm\\Documents\\GitHub\\PitchingPlan\\PitchingPlan")
-
+setwd("~/GitHub/PitchingPlan/PitchingPlan")
 
 sheets_auth(
   email = "pmammino18@gmail.com")
@@ -68,6 +66,8 @@ daily_email <- function(pitcher)
     filter(Day == workout) %>%
     select(Drill,Ball,Sets,Reps,Intensity)
   
+  if(nrow(table) > 0)
+  {
   table <- htmlTable(table,rnames = FALSE)
   
   html_body <- paste0(glue("<p>Good Morning {pitcher},</p>"),
@@ -75,6 +75,15 @@ daily_email <- function(pitcher)
                       table,
                       "<p>If you need a reminder of the keys for you to focus on consult the link below</p>",
                       "<p><a href='https://pmammino18.shinyapps.io/pitchingplan/'>Link To App</a></p>")
+  }
+  else
+  {
+    html_body <- paste0(glue("<p>Good Morning {pitcher},</p>"),
+                        "<p>The Table below will show you your throwing program for today:</p>",
+                        workout,
+                        "<p>If you need a reminder of the keys for you to focus on consult the link below</p>",
+                        "<p><a href='https://pmammino18.shinyapps.io/pitchingplan/'>Link To App</a></p>")
+  }
   
   send.mail(from = "pmammino18@gmail.com",
             to = c("pmammino18@gmail.com"),

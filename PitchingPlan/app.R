@@ -9,7 +9,6 @@ library(chron)
 library(stringr)
 library(gt)
 library(glue)
-library(plotly)
 
 source("source.R")
 

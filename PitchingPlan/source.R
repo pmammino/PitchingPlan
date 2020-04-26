@@ -5,6 +5,7 @@
 # install.packages("gridExtra")
 # install.packages("googlesheets4")
 # install.packages("gt")
+# install.packages("chron")
 # library(tidyverse)
 # library(ggplot2)
 # library(mgcv)
@@ -15,7 +16,6 @@
 # library(stringr)
 # library(gt)
 # library(glue)
-# library(plotly)
 
 ideals <- readRDS("ideals.rds")
 
