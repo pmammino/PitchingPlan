@@ -9,6 +9,7 @@ library(chron)
 library(stringr)
 library(gt)
 library(glue)
+library(plotly)
 
 source("source.R")
 
@@ -34,7 +35,14 @@ ui <- fluidPage(
             tabPanel("Monthly Plan", 
                      gt_output("monthlyplan")),
             tabPanel("Throwing Key", 
-                     gt_output("throwingkey"))
+                     gt_output("throwingkey")),
+            tabPanel("Movement Links",
+                     h3(a("Pivot Pick Off",href = "https://twitter.com/The_BPCsj/status/946060384531877890", target = "_blank")),
+                     h3(a("Split Stance",href = "https://twitter.com/The_BPCsj/status/1161014490432966656", target = "_blank")),
+                     h3(a("Roll-In",href = "https://twitter.com/The_BPCsj/status/1161369627584290817", target = "_blank")),
+                     h3(a("Step back",href = "https://twitter.com/The_BPCsj/status/1049374308680835078", target = "_blank")),
+                     h3(a("Walk In Wind Up",href = "https://twitter.com/The_BPCsj/status/1198355783420973057", target = "_blank")),
+                     h3(a("Stretch and Stride",href = "https://twitter.com/The_BPCsj/status/1175152661450170369", target = "_blank")))
         )
 )
 

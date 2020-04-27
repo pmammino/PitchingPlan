@@ -66,6 +66,12 @@ rapsodo_summary_table <- function(pitcher)
   pitcher_stats$SpinEff <- (pitcher_stats$True.Spin/pitcher_stats$Total.Spin)*100
   pitcher_stats <- pitcher_stats %>% mutate_if(is.numeric, ~round(., 1))
   
+ pitcher_stats$Spin.Axis <- ifelse(pitcher_stats$HB > 0,
+                                   paste0((floor((pitcher_stats$Spin.Axis/30) - 6)),":",
+                                           (floor(((pitcher_stats$Spin.Axis/30)%%1)*60))),
+                                   paste0((floor((pitcher_stats$Spin.Axis/30) + 6)),":",
+                                          (floor(((pitcher_stats$Spin.Axis/30)%%1)*60))))
+  
   summary_stats <- pitcher_stats[,c("PITCH.TYPE",
                                     "Velo",
                                     "Spin.Axis",

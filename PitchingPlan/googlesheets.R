@@ -46,7 +46,6 @@ saveRDS(throwingkey, "throwingkey.rds")
 
 saveRDS(development,"development.rds")
 
-
 pitchers <- as.list(unique(rapsodo$Pitcher))
 
 daily_email <- function(pitcher)
@@ -62,9 +61,18 @@ daily_email <- function(pitcher)
   
   workout <- workout[,weekdays(Sys.Date())][1]
   
-  table <- throwingkey %>%
-    filter(Day == workout) %>%
+  if (workout == "Light Toss/OFF")
+  {
+    table <- throwingkey %>%
+    filter(Day == "Light Toss") %>%
     select(Drill,Ball,Sets,Reps,Intensity)
+  }
+  else
+  {
+    table <- throwingkey %>%
+      filter(Day == workout) %>%
+      select(Drill,Ball,Sets,Reps,Intensity)
+  }
   
   if(nrow(table) > 0)
   {
