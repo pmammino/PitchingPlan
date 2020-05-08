@@ -42,10 +42,11 @@ rapsodo <- rapsodo %>%
 rapsodo$SPIN.DIR. <- chron(times = paste0(rapsodo$SPIN.DIR.,":00"))
 rapsodo$SPIN.AXIS <- ifelse(rapsodo$H..BREAK > 0, 180 + (chron::hours(rapsodo$SPIN.DIR.)*30) + (chron::minutes(rapsodo$SPIN.DIR.)/2),(chron::hours(rapsodo$SPIN.DIR.)*30) - 180 + (chron::minutes(rapsodo$SPIN.DIR.)/2))
 
-rapsodo_summary_table <- function(pitcher)
+rapsodo_summary_table <- function(pitcher, date)
 {
   rapsodo <- rapsodo %>%
-  filter(Pitcher == pitcher)
+  filter(Pitcher == pitcher) %>%
+    filter(DATE >= date)
   
   ideals <- ideals %>%
     filter(Pitcher == pitcher)
@@ -66,11 +67,17 @@ rapsodo_summary_table <- function(pitcher)
   pitcher_stats$SpinEff <- (pitcher_stats$True.Spin/pitcher_stats$Total.Spin)*100
   pitcher_stats <- pitcher_stats %>% mutate_if(is.numeric, ~round(., 1))
   
- pitcher_stats$Spin.Axis <- ifelse(pitcher_stats$HB > 0,
-                                   paste0((floor((pitcher_stats$Spin.Axis/30) - 6)),":",
-                                           (floor(((pitcher_stats$Spin.Axis/30)%%1)*60))),
-                                   paste0((floor((pitcher_stats$Spin.Axis/30) + 6)),":",
-                                          (floor(((pitcher_stats$Spin.Axis/30)%%1)*60))))
+  minutes <- as.character(ifelse(pitcher_stats$HB > 0,
+                   floor(((pitcher_stats$Spin.Axis/30)%%1)*60),
+                   floor(((pitcher_stats$Spin.Axis/30)%%1)*60)))
+
+  hour <- as.character(ifelse(pitcher_stats$HB > 0,
+               floor((pitcher_stats$Spin.Axis/30) - 6),
+               floor((pitcher_stats$Spin.Axis/30) + 6)))
+  
+  hour <- ifelse(hour == "0","12",hour)
+  
+  pitcher_stats$Spin.Axis <- paste0(str_pad(hour,2,"left","0"),":",str_pad(minutes,2,"left","0"))
   
   summary_stats <- pitcher_stats[,c("PITCH.TYPE",
                                     "Velo",

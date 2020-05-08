@@ -21,6 +21,8 @@ ui <- fluidPage(
         selectInput("pitcher",
                     "Select Pitcher:",
                     sort(unique(as.character(rapsodo$Pitcher)))),
+        dateInput("date", "Date Since:", value = "2019-08-01",
+                  format = "yyyy-mm-dd"),
         tabsetPanel(
             tabPanel("Rapsodo", gt_output("rapsodo"),
                      uiOutput("pitchType"),
@@ -49,7 +51,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$rapsodo <- render_gt({
-        rapsodo_summary_table(input$pitcher)
+        rapsodo_summary_table(input$pitcher, input$date)
     })
     
     output$monthlyplan <- render_gt({
